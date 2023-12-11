@@ -1,0 +1,49 @@
+spin_manifest_version = 2
+
+[application]
+name = "spin-pubsub-redis"
+version = "0.1.0"
+authors = ["Radu Matei <radu@fermyon.com>"]
+description = "Spin application demonstrating Dapr PubSub"
+
+[variables]
+dapr_host = { default = "http://localhost" }
+dapr_port = { default = "5003" }
+dapr_pubsub_name = { default = "orderpubsub" }
+dapr_pubsub_topic = { default = "orders" }
+
+[[trigger.http]]
+route = "/checkout/..."
+component = "checkout"
+
+[component.checkout]
+source = "checkout/target/checkout.wasm"
+# TODO: https://github.com/fermyon/spin/issues/2153
+allowed_outbound_hosts = ["http://localhost:5003"]
+[component.checkout.variables]
+dapr_host = "{{ dapr_host }}"
+dapr_port = "{{ dapr_port }}"
+dapr_pubsub_name = "{{ dapr_pubsub_name }}"
+dapr_pubsub_topic = "{{ dapr_pubsub_topic }}"
+[component.checkout.build]
+command = "npm run build"
+workdir = "checkout"
+watch = ["src/**/*.ts"]
+
+
+[[trigger.http]]
+route = "/dapr/..."
+component = "order-processor"
+
+[component.order-processor]
+source = "order-processor/target/order-processor.wasm"
+allowed_outbound_hosts = ["http://localhost:5003"]
+[component.order-processor.variables]
+dapr_host = "{{ dapr_host }}"
+dapr_port = "{{ dapr_port }}"
+dapr_pubsub_name = "{{ dapr_pubsub_name }}"
+dapr_pubsub_topic = "{{ dapr_pubsub_topic }}"
+[component.order-processor.build]
+command = "npm run build"
+workdir = "order-processor"
+watch = ["src/**/*.ts"]

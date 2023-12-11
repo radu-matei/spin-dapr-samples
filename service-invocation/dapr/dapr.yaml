@@ -1,0 +1,11 @@
+version: 1
+apps:
+  - appDirPath: ../order-processor/
+    appID: order-processor
+    appPort: 3000
+    daprHTTPPort: 5003
+    command: ["spin", "watch", "--listen", "0.0.0.0:3000"]
+  - appID: checkout
+    appDirPath: ../checkout/
+    command: ["spin", "watch", "--listen", "0.0.0.0:3001"]
+

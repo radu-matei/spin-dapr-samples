@@ -1,0 +1,9 @@
+version: 1
+common:
+  resourcesPath: .
+
+apps:
+  - appID: pubsubapp
+    appDirPath: ../
+    daprHTTPPort: 5003
+    appPort: 3000

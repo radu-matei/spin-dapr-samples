@@ -1,0 +1,10 @@
+
+version: 1
+common:
+  resourcesPath: .
+apps:
+  - appID: state-management
+    daprHTTPPort: 5003
+    appDirPath: ../
+    command: ["spin", "watch"]
+

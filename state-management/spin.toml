@@ -1,0 +1,28 @@
+spin_manifest_version = 2
+
+[application]
+name = "state-management"
+version = "0.1.0"
+authors = ["Radu Matei <radu@fermyon.com>"]
+description = "Spin application demonstrating Dapr state management"
+
+[variables]
+dapr_host = { default = "http://localhost" }
+dapr_port = { default = "5003" }
+dapr_statestore = { default = "statestore" }
+
+[[trigger.http]]
+route = "/..."
+component = "state-management"
+
+[component.state-management]
+source = "target/wasm32-wasi/release/state_management.wasm"
+# TODO: https://github.com/fermyon/spin/issues/2153
+allowed_outbound_hosts = ["http://localhost:5003"]
+[component.state-management.variables]
+dapr_host = "{{ dapr_host }}"
+dapr_port = "{{ dapr_port }}"
+dapr_statestore = "{{ dapr_statestore }}"
+[component.state-management.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]

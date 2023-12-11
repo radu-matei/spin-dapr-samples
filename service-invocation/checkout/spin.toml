@@ -1,0 +1,26 @@
+spin_manifest_version = 2
+
+[application]
+name = "checkout"
+version = "0.1.0"
+authors = ["Radu Matei <radu@fermyon.com>"]
+
+[variables]
+dapr_host = { default = "http://localhost" }
+dapr_port = { default = "5003" }
+
+
+[[trigger.http]]
+route = "/checkout/..."
+component = "checkout"
+
+[component.checkout]
+source = "target/checkout.wasm"
+# TODO: https://github.com/fermyon/spin/issues/2153
+allowed_outbound_hosts = ["http://localhost:5003"]
+[component.checkout.variables]
+dapr_host = "{{ dapr_host }}"
+dapr_port = "{{ dapr_port }}"
+[component.checkout.build]
+command = "npm run build"
+watch = ["src/**/*.ts"]
